@@ -75,14 +75,10 @@ func (b *Builder) atOffset() (string, string) {
 	return at, offset
 }
 
-// Pretty returns the prettified representation of the node.
-// It uses the level information to determine at which level/depth the current
-// node is in the AST and uses this to apply indentation.
 func (b *Builder) Pretty(level int) string {
 	return b.internalMatrix.Pretty(level)
 }
 
-// PositionRange returns the position of the AST Node in the query string.
 func (b *Builder) PositionRange() posrange.PositionRange {
 	return b.internalMatrix.PositionRange()
 }

@@ -1,4 +1,4 @@
-package function
+package promqlbuilder
 
 import (
 	"github.com/perses/promql-builder/matrix"
