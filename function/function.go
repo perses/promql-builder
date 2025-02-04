@@ -1,6 +1,7 @@
 package function
 
 import (
+	"github.com/perses/promql-builder/matrix"
 	"github.com/prometheus/prometheus/promql/parser"
 )
 
@@ -31,7 +32,7 @@ func Absent(vector parser.Expr) *parser.Call {
 	return newFunction("absent", vector)
 }
 
-func AbsentOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func AbsentOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("absent_over_time", matrix)
 }
 
@@ -59,7 +60,7 @@ func Atanh(vector parser.Expr) *parser.Call {
 	return newFunction("atanh", vector)
 }
 
-func AvgOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func AvgOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("avg_over_time", matrix)
 }
 
@@ -67,7 +68,7 @@ func Ceil(vector parser.Expr) *parser.Call {
 	return newFunction("ceil", vector)
 }
 
-func Changes(matrix *parser.MatrixSelector) *parser.Call {
+func Changes(matrix *matrix.Builder) *parser.Call {
 	return newFunction("changes", matrix)
 }
 
@@ -91,7 +92,7 @@ func Cosh(vector parser.Expr) *parser.Call {
 	return newFunction("cosh", vector)
 }
 
-func CountOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func CountOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("count_over_time", matrix)
 }
 
@@ -115,11 +116,11 @@ func Deg(vector parser.Expr) *parser.Call {
 	return newFunction("deg", vector)
 }
 
-func Delta(matrix *parser.MatrixSelector) *parser.Call {
+func Delta(matrix *matrix.Builder) *parser.Call {
 	return newFunction("delta", matrix)
 }
 
-func Deriv(matrix *parser.MatrixSelector) *parser.Call {
+func Deriv(matrix *matrix.Builder) *parser.Call {
 	return newFunction("deriv", matrix)
 }
 
@@ -159,7 +160,7 @@ func HistogramQuantile(quantile float64, vector parser.Expr) *parser.Call {
 	return newFunction("histogram_quantile", newNumber(quantile), vector)
 }
 
-func DoubleExponentialSmoothing(matrix *parser.MatrixSelector, smoothingFactor float64, trendFactor float64) *parser.Call {
+func DoubleExponentialSmoothing(matrix *matrix.Builder, smoothingFactor float64, trendFactor float64) *parser.Call {
 	return newFunction("double_exponential_smoothing", matrix, newNumber(smoothingFactor), newNumber(trendFactor))
 }
 
@@ -167,11 +168,11 @@ func Hour(vector parser.Expr) *parser.Call {
 	return newFunction("hour", vector)
 }
 
-func IDelta(matrix *parser.MatrixSelector) *parser.Call {
+func IDelta(matrix *matrix.Builder) *parser.Call {
 	return newFunction("idelta", matrix)
 }
 
-func Increase(matrix *parser.MatrixSelector) *parser.Call {
+func Increase(matrix *matrix.Builder) *parser.Call {
 	return newFunction("increase", matrix)
 }
 
@@ -179,7 +180,7 @@ func Info(vector parser.Expr, dataLabelSelector parser.Expr) *parser.Call {
 	return newFunction("info", vector, dataLabelSelector)
 }
 
-func IRate(matrix *parser.MatrixSelector) *parser.Call {
+func IRate(matrix *matrix.Builder) *parser.Call {
 	return newFunction("irate", matrix)
 }
 
@@ -195,7 +196,7 @@ func LabelJoin(vector parser.Expr, destinationLabel string, replacement string, 
 	return newFunction("label_join", args...)
 }
 
-func LastOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func LastOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("last_over_time", matrix)
 }
 
@@ -211,15 +212,15 @@ func Log2(vector parser.Expr) *parser.Call {
 	return newFunction("log2", vector)
 }
 
-func MadOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func MadOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("mad_over_time", matrix)
 }
 
-func MaxOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func MaxOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("max_over_time", matrix)
 }
 
-func MinOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func MinOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("min_over_time", matrix)
 }
 
@@ -235,15 +236,15 @@ func PI() *parser.Call {
 	return newFunction("pi")
 }
 
-func PredictLinear(matrix *parser.MatrixSelector, t float64) *parser.Call {
+func PredictLinear(matrix *matrix.Builder, t float64) *parser.Call {
 	return newFunction("predict_linear", matrix, newNumber(t))
 }
 
-func PresentOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func PresentOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("present_over_time", matrix)
 }
 
-func QuantileOverTime(t float64, matrix *parser.MatrixSelector) *parser.Call {
+func QuantileOverTime(t float64, matrix *matrix.Builder) *parser.Call {
 	return newFunction("quantile_over_time", newNumber(t), matrix)
 }
 
@@ -251,11 +252,11 @@ func Rad(vector parser.Expr) *parser.Call {
 	return newFunction("rad", vector)
 }
 
-func Rate(matrix *parser.MatrixSelector) *parser.Call {
+func Rate(matrix *matrix.Builder) *parser.Call {
 	return newFunction("rate", matrix)
 }
 
-func Resets(matrix *parser.MatrixSelector) *parser.Call {
+func Resets(matrix *matrix.Builder) *parser.Call {
 	return newFunction("resets", matrix)
 }
 
@@ -307,15 +308,15 @@ func Sqrt(vector parser.Expr) *parser.Call {
 	return newFunction("sqrt", vector)
 }
 
-func StddevOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func StddevOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("stddev_over_time", matrix)
 }
 
-func StdvarOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func StdvarOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("stdvar_over_time", matrix)
 }
 
-func SumOverTime(matrix *parser.MatrixSelector) *parser.Call {
+func SumOverTime(matrix *matrix.Builder) *parser.Call {
 	return newFunction("sum_over_time", matrix)
 }
 

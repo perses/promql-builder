@@ -1,34 +1,39 @@
-package vector
+package subquery
 
 import (
 	"time"
 
 	"github.com/perses/promql-builder/duration"
-	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/promql/parser"
 )
 
-type Option func(vector *Builder)
+type Builder parser.SubqueryExpr
 
-type Builder parser.VectorSelector
+type Option func(subquery *Builder)
 
-func New(options ...Option) *parser.VectorSelector {
+func New(options ...Option) *parser.SubqueryExpr {
 	b := &Builder{}
 	for _, opt := range options {
 		opt(b)
 	}
-	return (*parser.VectorSelector)(b)
+	return (*parser.SubqueryExpr)(b)
 }
 
-func WithMetricName(name string) Option {
-	return func(vector *Builder) {
-		vector.Name = name
+func WithExpr(expr parser.Expr) Option {
+	return func(subquery *Builder) {
+		subquery.Expr = expr
 	}
 }
 
-func WithLabelMatchers(matchers ...*labels.Matcher) Option {
-	return func(vector *Builder) {
-		vector.LabelMatchers = matchers
+func WithRangeAsString(d string) Option {
+	return func(subquery *Builder) {
+		subquery.Range = time.Duration(duration.MustParse(d))
+	}
+}
+
+func WithRange(duration time.Duration) Option {
+	return func(subquery *Builder) {
+		subquery.Range = duration
 	}
 }
 
@@ -39,7 +44,6 @@ func WithOffset(duration time.Duration) Option {
 }
 
 func WithOffsetAsString(d string) Option {
-
 	return func(vector *Builder) {
 		vector.Offset = time.Duration(duration.MustParse(d))
 	}
