@@ -85,20 +85,16 @@ func (b *Builder) PositionRange() posrange.PositionRange {
 
 type Option func(matrix *Builder)
 
-func New(options ...Option) *Builder {
+func New(v *parser.VectorSelector, options ...Option) *Builder {
 	b := &Builder{
-		internalMatrix: &parser.MatrixSelector{},
+		internalMatrix: &parser.MatrixSelector{
+			VectorSelector: v,
+		},
 	}
 	for _, opt := range options {
 		opt(b)
 	}
 	return b
-}
-
-func WithVectorSelector(v *parser.VectorSelector) Option {
-	return func(matrix *Builder) {
-		matrix.internalMatrix.VectorSelector = v
-	}
 }
 
 func WithRange(d time.Duration) Option {
