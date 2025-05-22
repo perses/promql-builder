@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/perses/promql-builder/duration"
@@ -76,7 +77,7 @@ func (b *Builder) atOffset() (string, string) {
 }
 
 func (b *Builder) Pretty(level int) string {
-	return b.internalMatrix.Pretty(level)
+	return getCommonPrefixIndent(level, b)
 }
 
 func (b *Builder) PositionRange() posrange.PositionRange {
@@ -117,4 +118,17 @@ func WithRangeAsVariable(name string) Option {
 	return func(matrix *Builder) {
 		matrix.rangeAsVariable = name
 	}
+}
+
+// Refer to https://github.com/prometheus/prometheus/blob/v3.4.0/promql/parser/prettier.go for below.
+// The following is only used for matrix selector.
+func getCommonPrefixIndent(level int, current *Builder) string {
+	return fmt.Sprintf("%s%s", indent(level), current.String())
+}
+
+const indentString = "  "
+
+// indent adds the indentString n number of times.
+func indent(n int) string {
+	return strings.Repeat(indentString, n)
 }
