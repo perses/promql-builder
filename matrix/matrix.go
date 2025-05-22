@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/perses/promql-builder/duration"
@@ -76,27 +77,7 @@ func (b *Builder) atOffset() (string, string) {
 }
 
 func (b *Builder) Pretty(level int) string {
-	at, offset := b.atOffset()
-	// Copy the Vector selector before changing the offset
-	vecSelector := *b.internalMatrix.VectorSelector.(*parser.VectorSelector)
-	// Do not print the @ and offset twice.
-	offsetVal, atVal, preproc := vecSelector.OriginalOffset, vecSelector.Timestamp, vecSelector.StartOrEnd
-	vecSelector.OriginalOffset = 0
-	vecSelector.Timestamp = nil
-	vecSelector.StartOrEnd = 0
-
-	rangeAsString := ""
-	if len(b.rangeAsVariable) > 0 {
-		rangeAsString = b.rangeAsVariable
-	} else {
-		rangeAsString = model.Duration(b.internalMatrix.Range).String()
-	}
-
-	str := fmt.Sprintf("%s[%s]%s%s", vecSelector.Pretty(level), rangeAsString, at, offset)
-
-	vecSelector.OriginalOffset, vecSelector.Timestamp, vecSelector.StartOrEnd = offsetVal, atVal, preproc
-
-	return str
+	return getCommonPrefixIndent(level, b)
 }
 
 func (b *Builder) PositionRange() posrange.PositionRange {
@@ -137,4 +118,17 @@ func WithRangeAsVariable(name string) Option {
 	return func(matrix *Builder) {
 		matrix.rangeAsVariable = name
 	}
+}
+
+// Refer to https://github.com/prometheus/prometheus/blob/v3.4.0/promql/parser/prettier.go for below.
+// The following is only used for matrix selector.
+func getCommonPrefixIndent(level int, current *Builder) string {
+	return fmt.Sprintf("%s%s", indent(level), current.String())
+}
+
+const indentString = "  "
+
+// indent adds the indentString n number of times.
+func indent(n int) string {
+	return strings.Repeat(indentString, n)
 }
