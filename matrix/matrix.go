@@ -76,7 +76,27 @@ func (b *Builder) atOffset() (string, string) {
 }
 
 func (b *Builder) Pretty(level int) string {
-	return b.internalMatrix.Pretty(level)
+	at, offset := b.atOffset()
+	// Copy the Vector selector before changing the offset
+	vecSelector := *b.internalMatrix.VectorSelector.(*parser.VectorSelector)
+	// Do not print the @ and offset twice.
+	offsetVal, atVal, preproc := vecSelector.OriginalOffset, vecSelector.Timestamp, vecSelector.StartOrEnd
+	vecSelector.OriginalOffset = 0
+	vecSelector.Timestamp = nil
+	vecSelector.StartOrEnd = 0
+
+	rangeAsString := ""
+	if len(b.rangeAsVariable) > 0 {
+		rangeAsString = b.rangeAsVariable
+	} else {
+		rangeAsString = model.Duration(b.internalMatrix.Range).String()
+	}
+
+	str := fmt.Sprintf("%s[%s]%s%s", vecSelector.Pretty(level), rangeAsString, at, offset)
+
+	vecSelector.OriginalOffset, vecSelector.Timestamp, vecSelector.StartOrEnd = offsetVal, atVal, preproc
+
+	return str
 }
 
 func (b *Builder) PositionRange() posrange.PositionRange {

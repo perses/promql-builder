@@ -88,3 +88,137 @@ func TestPromQLBuilder(t *testing.T) {
 		})
 	}
 }
+
+func TestPretty(t *testing.T) {
+	testSuite := []struct {
+		name     string
+		expected string
+		expr     parser.Expr
+	}{
+		{
+			name:     "range vector",
+			expected: "foo[5d]",
+			expr: matrix.New(
+				vector.New(vector.WithMetricName("foo")),
+				matrix.WithRangeAsString("5d"),
+			),
+		},
+		{
+			name:     "range vector with variable",
+			expected: "foo[$__rate_interval]",
+			expr: matrix.New(
+				vector.New(vector.WithMetricName("foo")),
+				matrix.WithRangeAsVariable("$__rate_interval"),
+			),
+		},
+		{
+			name: "long promql expression with range vector and binary op",
+			expected: `    sum by (namespace, job, code) (
+      rate(
+        http_requests_total{code=~"5..",handler="query",job=~"thanos-query-example-query",namespace="thanos-operator-system"}[5m]
+      )
+    )
+  / ignoring (code) group_left ()
+    sum by (namespace, job) (
+      rate(
+        http_requests_total{handler="query",job=~"thanos-query-example-query",namespace="thanos-operator-system"}[5m]
+      )
+    )
+*
+  100`,
+			expr: Mul(
+				Div(
+					Sum(
+						Rate(
+							matrix.New(
+								vector.New(
+									vector.WithMetricName("http_requests_total"),
+									vector.WithLabelMatchers(
+										label.New("code").EqualRegexp("5.."),
+										label.New("handler").Equal("query"),
+										label.New("job").EqualRegexp("thanos-query-example-query"),
+										label.New("namespace").Equal("thanos-operator-system"),
+									),
+								),
+								matrix.WithRangeAsString("5m"),
+							),
+						),
+					).By("namespace", "job", "code"),
+					Sum(
+						Rate(
+							matrix.New(
+								vector.New(
+									vector.WithMetricName("http_requests_total"),
+									vector.WithLabelMatchers(
+										label.New("handler").Equal("query"),
+										label.New("job").EqualRegexp("thanos-query-example-query"),
+										label.New("namespace").Equal("thanos-operator-system"),
+									),
+								),
+								matrix.WithRangeAsString("5m"),
+							),
+						),
+					).By("namespace", "job"),
+				).Ignoring("code").GroupLeft(),
+				&parser.NumberLiteral{Val: 100},
+			),
+		},
+		{
+			name: "long promql expression with range vector and binary op and matrix variable",
+			expected: `    sum by (namespace, job, code) (
+      rate(
+        http_requests_total{code=~"5..",handler="query",job=~"thanos-query-example-query",namespace="thanos-operator-system"}[$__rate_interval]
+      )
+    )
+  / ignoring (code) group_left ()
+    sum by (namespace, job) (
+      rate(
+        http_requests_total{handler="query",job=~"thanos-query-example-query",namespace="thanos-operator-system"}[$__rate_interval]
+      )
+    )
+*
+  100`,
+			expr: Mul(
+				Div(
+					Sum(
+						Rate(
+							matrix.New(
+								vector.New(
+									vector.WithMetricName("http_requests_total"),
+									vector.WithLabelMatchers(
+										label.New("code").EqualRegexp("5.."),
+										label.New("handler").Equal("query"),
+										label.New("job").EqualRegexp("thanos-query-example-query"),
+										label.New("namespace").Equal("thanos-operator-system"),
+									),
+								),
+								matrix.WithRangeAsVariable("$__rate_interval"),
+							),
+						),
+					).By("namespace", "job", "code"),
+					Sum(
+						Rate(
+							matrix.New(
+								vector.New(
+									vector.WithMetricName("http_requests_total"),
+									vector.WithLabelMatchers(
+										label.New("handler").Equal("query"),
+										label.New("job").EqualRegexp("thanos-query-example-query"),
+										label.New("namespace").Equal("thanos-operator-system"),
+									),
+								),
+								matrix.WithRangeAsVariable("$__rate_interval"),
+							),
+						),
+					).By("namespace", "job"),
+				).Ignoring("code").GroupLeft(),
+				&parser.NumberLiteral{Val: 100},
+			),
+		},
+	}
+	for _, test := range testSuite {
+		t.Run(test.name, func(t *testing.T) {
+			assert.Equal(t, test.expected, test.expr.Pretty(0))
+		})
+	}
+}
