@@ -84,6 +84,10 @@ func (b *Builder) PositionRange() posrange.PositionRange {
 	return b.internalMatrix.PositionRange()
 }
 
+func (b *Builder) Children() []parser.Node {
+	return []parser.Node{b.internalMatrix.VectorSelector}
+}
+
 type Option func(matrix *Builder)
 
 func New(v *parser.VectorSelector, options ...Option) *Builder {
