@@ -13,19 +13,19 @@ import (
 
 type Builder struct {
 	parser.Expr
-	internalMatrix  *parser.MatrixSelector
-	rangeAsVariable string
+	InternalMatrix  *parser.MatrixSelector
+	RangeAsVariable string
 }
 
 // Type returns the type the expression evaluates to. It does not perform
 // in-depth checks as this is done at parsing-time.
 func (b *Builder) Type() parser.ValueType {
-	return b.internalMatrix.Type()
+	return b.InternalMatrix.Type()
 }
 
 // PromQLExpr ensures that no other types accidentally implement the interface.
 func (b *Builder) PromQLExpr() {
-	b.internalMatrix.PromQLExpr()
+	b.InternalMatrix.PromQLExpr()
 }
 
 // String representation of the node that returns the given node when parsed
@@ -33,7 +33,7 @@ func (b *Builder) PromQLExpr() {
 func (b *Builder) String() string {
 	at, offset := b.atOffset()
 	// Copy the Vector selector before changing the offset
-	vecSelector := *b.internalMatrix.VectorSelector.(*parser.VectorSelector)
+	vecSelector := *b.InternalMatrix.VectorSelector.(*parser.VectorSelector)
 	// Do not print the @ and offset twice.
 	offsetVal, atVal, preproc := vecSelector.OriginalOffset, vecSelector.Timestamp, vecSelector.StartOrEnd
 	vecSelector.OriginalOffset = 0
@@ -41,10 +41,10 @@ func (b *Builder) String() string {
 	vecSelector.StartOrEnd = 0
 
 	rangeAsString := ""
-	if len(b.rangeAsVariable) > 0 {
-		rangeAsString = b.rangeAsVariable
+	if len(b.RangeAsVariable) > 0 {
+		rangeAsString = b.RangeAsVariable
 	} else {
-		rangeAsString = model.Duration(b.internalMatrix.Range).String()
+		rangeAsString = model.Duration(b.InternalMatrix.Range).String()
 	}
 
 	str := fmt.Sprintf("%s[%s]%s%s", vecSelector.String(), rangeAsString, at, offset)
@@ -56,7 +56,7 @@ func (b *Builder) String() string {
 
 func (b *Builder) atOffset() (string, string) {
 	// Copy the Vector selector before changing the offset
-	vecSelector := b.internalMatrix.VectorSelector.(*parser.VectorSelector)
+	vecSelector := b.InternalMatrix.VectorSelector.(*parser.VectorSelector)
 	offset := ""
 	switch {
 	case vecSelector.OriginalOffset > time.Duration(0):
@@ -81,18 +81,18 @@ func (b *Builder) Pretty(level int) string {
 }
 
 func (b *Builder) PositionRange() posrange.PositionRange {
-	return b.internalMatrix.PositionRange()
+	return b.InternalMatrix.PositionRange()
 }
 
 func (b *Builder) Children() []parser.Node {
-	return []parser.Node{b.internalMatrix.VectorSelector}
+	return []parser.Node{b.InternalMatrix.VectorSelector}
 }
 
 type Option func(matrix *Builder)
 
 func New(v *parser.VectorSelector, options ...Option) *Builder {
 	b := &Builder{
-		internalMatrix: &parser.MatrixSelector{
+		InternalMatrix: &parser.MatrixSelector{
 			VectorSelector: v,
 		},
 	}
@@ -104,14 +104,14 @@ func New(v *parser.VectorSelector, options ...Option) *Builder {
 
 func WithRange(d time.Duration) Option {
 	return func(matrix *Builder) {
-		matrix.internalMatrix.Range = d
+		matrix.InternalMatrix.Range = d
 	}
 }
 
 // WithRangeAsString sets the range as a string like "3h2m1s".
 func WithRangeAsString(d string) Option {
 	return func(matrix *Builder) {
-		matrix.internalMatrix.Range = time.Duration(duration.MustParse(d))
+		matrix.InternalMatrix.Range = time.Duration(duration.MustParse(d))
 	}
 }
 
@@ -120,7 +120,7 @@ func WithRangeAsString(d string) Option {
 // Use it if your range is not correct in terms of PromQL syntax.
 func WithRangeAsVariable(name string) Option {
 	return func(matrix *Builder) {
-		matrix.rangeAsVariable = name
+		matrix.RangeAsVariable = name
 	}
 }
 
