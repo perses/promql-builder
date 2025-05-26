@@ -14,6 +14,9 @@ import (
 // invoked recursively with visitor w for each of the non-nil children of node,
 // followed by a call of w.Visit(nil), returning an error
 // As the tree is descended the path of previous nodes is provided.
+//
+// Taken from https://github.com/prometheus/prometheus/blob/v3.4.0/promql/parser/ast.go#L325
+// But adds handling cases for promqlbuilder node types.
 func Walk(v parser.Visitor, node parser.Node, path []parser.Node) error {
 	var err error
 	if v, err = v.Visit(node, path); v == nil || err != nil {
@@ -44,11 +47,17 @@ func (f inspector) Visit(node parser.Node, path []parser.Node) (parser.Visitor, 
 // Inspect traverses an AST in depth-first order: It starts by calling
 // f(node, path); node must not be nil. If f returns a nil error, Inspect invokes f
 // for all the non-nil children of node, recursively.
+//
+// Taken from https://github.com/prometheus/prometheus/blob/v3.4.0/promql/parser/ast.go#L370
+// But adds handling cases for promqlbuilder node types.
 func Inspect(node parser.Node, f inspector) {
 	Walk(f, node, nil) //nolint:errcheck
 }
 
 // Children returns a list of all child nodes of a syntax tree node.
+//
+// Taken from https://github.com/prometheus/prometheus/blob/v3.4.0/promql/parser/ast.go#L377
+// But adds handling cases for promqlbuilder node types.
 func Children(node parser.Node) []parser.Node {
 	// For some reasons these switches have significantly better performance than interfaces
 	switch n := node.(type) {
@@ -118,6 +127,8 @@ func Children(node parser.Node) []parser.Node {
 	}
 }
 
+// DeepCopyExpr copies an expression and all its children recursively.
+// Handler promqlbuilder node types as well.
 func DeepCopyExpr(expr parser.Expr) parser.Expr {
 	if expr == nil {
 		return nil
