@@ -220,3 +220,48 @@ rate(foo[1h2m4s]) + on("namespace") vector(123)
 ```
 
 Note: the Group modifiers (`group_left` or `group_right`) can be used once the vector matching keywords are used.
+
+### Iterate through PromQL AST
+
+This lib also provides Prometheus-inspired PromQL AST iteration methods such as `Inspect`, `Walk`, `Children`, that can handle the 
+custom nodes of expressions constructed using this lib, as well as PromQL expression deep copying using `DeepCopyExpr`.
+
+This allows constructing utilities like,
+```go
+func SetLabelMatchers(query parser.Expr, matchers []*labels.Matcher) parser.Expr {
+	copy := promqlbuilder.DeepCopyExpr(query)
+	for _, l := range matchers {
+		copy = LabelsSetPromQL(copy, l.Type, l.Name, l.Value)
+	}
+	return copy
+}
+
+func LabelsSetPromQL(query parser.Expr, matchType labels.MatchType, name, value string) parser.Expr {
+	if name == "" || value == "" {
+		return query
+	}
+
+	promqlbuilder.Inspect(query, func(node parser.Node, path []parser.Node) error {
+		if n, ok := node.(*parser.VectorSelector); ok {
+			var found bool
+			for i, l := range n.LabelMatchers {
+				if l.Name == name {
+					n.LabelMatchers[i].Type = matchType
+					n.LabelMatchers[i].Value = value
+					found = true
+				}
+			}
+			if !found {
+				n.LabelMatchers = append(n.LabelMatchers, &labels.Matcher{
+					Type:  matchType,
+					Name:  name,
+					Value: value,
+				})
+			}
+		}
+		return nil
+	})
+
+	return query
+}
+```
