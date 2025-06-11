@@ -37,6 +37,13 @@ func WithRange(duration time.Duration) Option {
 	}
 }
 
+func WithRangeAndStep(duration time.Duration, step time.Duration) Option {
+	return func(subquery *Builder) {
+		subquery.Range = duration
+		subquery.Step = step
+	}
+}
+
 func WithOffset(duration time.Duration) Option {
 	return func(vector *Builder) {
 		vector.Offset = duration

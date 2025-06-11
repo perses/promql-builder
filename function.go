@@ -32,8 +32,23 @@ func Absent(vector parser.Expr) *parser.Call {
 	return newFunction("absent", vector)
 }
 
-func AbsentOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("absent_over_time", matrix)
+type RangeVectorBuilder interface {
+	*matrix.Builder | *parser.SubqueryExpr
+}
+
+func convertToExpr[T RangeVectorBuilder](input T) parser.Expr {
+	switch v := any(input).(type) {
+	case *matrix.Builder:
+		return v
+	case *parser.SubqueryExpr:
+		return v
+	default:
+		panic("unsupported type")
+	}
+}
+
+func AbsentOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("absent_over_time", convertToExpr(input))
 }
 
 func Acos(vector parser.Expr) *parser.Call {
@@ -60,16 +75,16 @@ func Atanh(vector parser.Expr) *parser.Call {
 	return newFunction("atanh", vector)
 }
 
-func AvgOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("avg_over_time", matrix)
+func AvgOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("avg_over_time", convertToExpr(input))
 }
 
 func Ceil(vector parser.Expr) *parser.Call {
 	return newFunction("ceil", vector)
 }
 
-func Changes(matrix *matrix.Builder) *parser.Call {
-	return newFunction("changes", matrix)
+func Changes[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("changes", convertToExpr(input))
 }
 
 func Clamp(vector parser.Expr, min float64, max float64) *parser.Call {
@@ -92,8 +107,8 @@ func Cosh(vector parser.Expr) *parser.Call {
 	return newFunction("cosh", vector)
 }
 
-func CountOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("count_over_time", matrix)
+func CountOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("count_over_time", convertToExpr(input))
 }
 
 func DaysInMonth(vector parser.Expr) *parser.Call {
@@ -116,12 +131,12 @@ func Deg(vector parser.Expr) *parser.Call {
 	return newFunction("deg", vector)
 }
 
-func Delta(matrix *matrix.Builder) *parser.Call {
-	return newFunction("delta", matrix)
+func Delta[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("delta", convertToExpr(input))
 }
 
-func Deriv(matrix *matrix.Builder) *parser.Call {
-	return newFunction("deriv", matrix)
+func Deriv[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("deriv", convertToExpr(input))
 }
 
 func Exp(vector parser.Expr) *parser.Call {
@@ -160,28 +175,28 @@ func HistogramQuantile(quantile float64, vector parser.Expr) *parser.Call {
 	return newFunction("histogram_quantile", newNumber(quantile), vector)
 }
 
-func DoubleExponentialSmoothing(matrix *matrix.Builder, smoothingFactor float64, trendFactor float64) *parser.Call {
-	return newFunction("double_exponential_smoothing", matrix, newNumber(smoothingFactor), newNumber(trendFactor))
+func DoubleExponentialSmoothing[T RangeVectorBuilder](input T, smoothingFactor float64, trendFactor float64) *parser.Call {
+	return newFunction("double_exponential_smoothing", convertToExpr(input), newNumber(smoothingFactor), newNumber(trendFactor))
 }
 
 func Hour(vector parser.Expr) *parser.Call {
 	return newFunction("hour", vector)
 }
 
-func IDelta(matrix *matrix.Builder) *parser.Call {
-	return newFunction("idelta", matrix)
+func IDelta[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("idelta", convertToExpr(input))
 }
 
-func Increase(matrix *matrix.Builder) *parser.Call {
-	return newFunction("increase", matrix)
+func Increase[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("increase", convertToExpr(input))
 }
 
 func Info(vector parser.Expr, dataLabelSelector parser.Expr) *parser.Call {
 	return newFunction("info", vector, dataLabelSelector)
 }
 
-func IRate(matrix *matrix.Builder) *parser.Call {
-	return newFunction("irate", matrix)
+func IRate[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("irate", convertToExpr(input))
 }
 
 func LabelReplace(vector parser.Expr, destinationLabel string, replacement string, sourceLabel string, regexp string) *parser.Call {
@@ -196,8 +211,8 @@ func LabelJoin(vector parser.Expr, destinationLabel string, replacement string, 
 	return newFunction("label_join", args...)
 }
 
-func LastOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("last_over_time", matrix)
+func LastOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("last_over_time", convertToExpr(input))
 }
 
 func Ln(vector parser.Expr) *parser.Call {
@@ -212,16 +227,16 @@ func Log2(vector parser.Expr) *parser.Call {
 	return newFunction("log2", vector)
 }
 
-func MadOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("mad_over_time", matrix)
+func MadOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("mad_over_time", convertToExpr(input))
 }
 
-func MaxOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("max_over_time", matrix)
+func MaxOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("max_over_time", convertToExpr(input))
 }
 
-func MinOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("min_over_time", matrix)
+func MinOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("min_over_time", convertToExpr(input))
 }
 
 func Minute(vector parser.Expr) *parser.Call {
@@ -236,28 +251,28 @@ func PI() *parser.Call {
 	return newFunction("pi")
 }
 
-func PredictLinear(matrix *matrix.Builder, t float64) *parser.Call {
-	return newFunction("predict_linear", matrix, newNumber(t))
+func PredictLinear[T RangeVectorBuilder](input T, t float64) *parser.Call {
+	return newFunction("predict_linear", convertToExpr(input), newNumber(t))
 }
 
-func PresentOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("present_over_time", matrix)
+func PresentOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("present_over_time", convertToExpr(input))
 }
 
-func QuantileOverTime(t float64, matrix *matrix.Builder) *parser.Call {
-	return newFunction("quantile_over_time", newNumber(t), matrix)
+func QuantileOverTime[T RangeVectorBuilder](t float64, input T) *parser.Call {
+	return newFunction("quantile_over_time", newNumber(t), convertToExpr(input))
 }
 
 func Rad(vector parser.Expr) *parser.Call {
 	return newFunction("rad", vector)
 }
 
-func Rate(matrix *matrix.Builder) *parser.Call {
-	return newFunction("rate", matrix)
+func Rate[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("rate", convertToExpr(input))
 }
 
-func Resets(matrix *matrix.Builder) *parser.Call {
-	return newFunction("resets", matrix)
+func Resets[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("resets", convertToExpr(input))
 }
 
 func Round(vector parser.Expr, t float64) *parser.Call {
@@ -308,16 +323,16 @@ func Sqrt(vector parser.Expr) *parser.Call {
 	return newFunction("sqrt", vector)
 }
 
-func StddevOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("stddev_over_time", matrix)
+func StddevOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("stddev_over_time", convertToExpr(input))
 }
 
-func StdvarOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("stdvar_over_time", matrix)
+func StdvarOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("stdvar_over_time", convertToExpr(input))
 }
 
-func SumOverTime(matrix *matrix.Builder) *parser.Call {
-	return newFunction("sum_over_time", matrix)
+func SumOverTime[T RangeVectorBuilder](input T) *parser.Call {
+	return newFunction("sum_over_time", convertToExpr(input))
 }
 
 func Tan(vector parser.Expr) *parser.Call {
