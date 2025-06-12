@@ -12,13 +12,13 @@ func newFunction(name string, args ...parser.Expr) *parser.Call {
 	}
 }
 
-func newNumber(num float64) *parser.NumberLiteral {
+func NewNumber(num float64) *parser.NumberLiteral {
 	return &parser.NumberLiteral{
 		Val: num,
 	}
 }
 
-func newString(s string) *parser.StringLiteral {
+func NewString(s string) *parser.StringLiteral {
 	return &parser.StringLiteral{
 		Val: s,
 	}
@@ -88,15 +88,15 @@ func Changes[T RangeVectorBuilder](input T) *parser.Call {
 }
 
 func Clamp(vector parser.Expr, min float64, max float64) *parser.Call {
-	return newFunction("clamp", vector, newNumber(min), newNumber(max))
+	return newFunction("clamp", vector, NewNumber(min), NewNumber(max))
 }
 
 func ClampMax(vector parser.Expr, max float64) *parser.Call {
-	return newFunction("clamp_max", vector, newNumber(max))
+	return newFunction("clamp_max", vector, NewNumber(max))
 }
 
 func ClampMin(vector parser.Expr, min float64) *parser.Call {
-	return newFunction("clamp_min", vector, newNumber(min))
+	return newFunction("clamp_min", vector, NewNumber(min))
 }
 
 func Cos(vector parser.Expr) *parser.Call {
@@ -168,15 +168,15 @@ func HistogramStdvar(vector parser.Expr) *parser.Call {
 }
 
 func HistogramFraction(lower float64, upper float64, vector parser.Expr) *parser.Call {
-	return newFunction("histogram_fraction", newNumber(lower), newNumber(upper), vector)
+	return newFunction("histogram_fraction", NewNumber(lower), NewNumber(upper), vector)
 }
 
 func HistogramQuantile(quantile float64, vector parser.Expr) *parser.Call {
-	return newFunction("histogram_quantile", newNumber(quantile), vector)
+	return newFunction("histogram_quantile", NewNumber(quantile), vector)
 }
 
 func DoubleExponentialSmoothing[T RangeVectorBuilder](input T, smoothingFactor float64, trendFactor float64) *parser.Call {
-	return newFunction("double_exponential_smoothing", convertToExpr(input), newNumber(smoothingFactor), newNumber(trendFactor))
+	return newFunction("double_exponential_smoothing", convertToExpr(input), NewNumber(smoothingFactor), NewNumber(trendFactor))
 }
 
 func Hour(vector parser.Expr) *parser.Call {
@@ -200,13 +200,13 @@ func IRate[T RangeVectorBuilder](input T) *parser.Call {
 }
 
 func LabelReplace(vector parser.Expr, destinationLabel string, replacement string, sourceLabel string, regexp string) *parser.Call {
-	return newFunction("label_replace", vector, newString(destinationLabel), newString(replacement), newString(sourceLabel), newString(regexp))
+	return newFunction("label_replace", vector, NewString(destinationLabel), NewString(replacement), NewString(sourceLabel), NewString(regexp))
 }
 
 func LabelJoin(vector parser.Expr, destinationLabel string, replacement string, srcLabels ...string) *parser.Call {
-	args := []parser.Expr{vector, newString(destinationLabel), newString(replacement)}
+	args := []parser.Expr{vector, NewString(destinationLabel), NewString(replacement)}
 	for _, label := range srcLabels {
-		args = append(args, newString(label))
+		args = append(args, NewString(label))
 	}
 	return newFunction("label_join", args...)
 }
@@ -252,7 +252,7 @@ func PI() *parser.Call {
 }
 
 func PredictLinear[T RangeVectorBuilder](input T, t float64) *parser.Call {
-	return newFunction("predict_linear", convertToExpr(input), newNumber(t))
+	return newFunction("predict_linear", convertToExpr(input), NewNumber(t))
 }
 
 func PresentOverTime[T RangeVectorBuilder](input T) *parser.Call {
@@ -260,7 +260,7 @@ func PresentOverTime[T RangeVectorBuilder](input T) *parser.Call {
 }
 
 func QuantileOverTime[T RangeVectorBuilder](t float64, input T) *parser.Call {
-	return newFunction("quantile_over_time", newNumber(t), convertToExpr(input))
+	return newFunction("quantile_over_time", NewNumber(t), convertToExpr(input))
 }
 
 func Rad(vector parser.Expr) *parser.Call {
@@ -276,7 +276,7 @@ func Resets[T RangeVectorBuilder](input T) *parser.Call {
 }
 
 func Round(vector parser.Expr, t float64) *parser.Call {
-	return newFunction("round", vector, newNumber(t))
+	return newFunction("round", vector, NewNumber(t))
 }
 
 func Scalar(vector parser.Expr) *parser.Call {
@@ -306,7 +306,7 @@ func SortDesc(vector parser.Expr) *parser.Call {
 func SortByLabel(vector parser.Expr, labels ...string) *parser.Call {
 	args := []parser.Expr{vector}
 	for _, label := range labels {
-		args = append(args, newString(label))
+		args = append(args, NewString(label))
 	}
 	return newFunction("sort_by_label", args...)
 }
@@ -314,7 +314,7 @@ func SortByLabel(vector parser.Expr, labels ...string) *parser.Call {
 func SortByLabelDesc(vector parser.Expr, labels ...string) *parser.Call {
 	args := []parser.Expr{vector}
 	for _, label := range labels {
-		args = append(args, newString(label))
+		args = append(args, NewString(label))
 	}
 	return newFunction("sort_by_label_desc", args...)
 }
@@ -352,7 +352,7 @@ func Timestamp(vector parser.Expr) *parser.Call {
 }
 
 func Vector(scalar float64) *parser.Call {
-	return newFunction("vector", newNumber(scalar))
+	return newFunction("vector", NewNumber(scalar))
 }
 
 func Year(vector parser.Expr) *parser.Call {

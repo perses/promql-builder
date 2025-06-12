@@ -47,12 +47,22 @@ func create(aggregateOp parser.ItemType, vector parser.Expr) *AggregationBuilder
 	return b
 }
 
+func createWithParam(aggregateOp parser.ItemType, vector parser.Expr, param parser.Expr) *AggregationBuilder {
+	b := &AggregationBuilder{
+		internal: &parser.AggregateExpr{},
+	}
+	b.internal.Expr = vector
+	b.internal.Op = aggregateOp
+	b.internal.Param = param
+	return b
+}
+
 func Avg(vector parser.Expr) *AggregationBuilder {
 	return create(parser.AVG, vector)
 }
 
-func Bottomk(vector parser.Expr) *AggregationBuilder {
-	return create(parser.BOTTOMK, vector)
+func BottomK(vector parser.Expr, k float64) *AggregationBuilder {
+	return createWithParam(parser.BOTTOMK, vector, NewNumber(k))
 }
 
 func Count(vector parser.Expr) *AggregationBuilder {
@@ -75,16 +85,16 @@ func Min(vector parser.Expr) *AggregationBuilder {
 	return create(parser.MIN, vector)
 }
 
-func Quantile(vector parser.Expr) *AggregationBuilder {
-	return create(parser.QUANTILE, vector)
+func Quantile(vector parser.Expr, quantile float64) *AggregationBuilder {
+	return createWithParam(parser.QUANTILE, vector, NewNumber(quantile))
 }
 
-func LimitK(vector parser.Expr) *AggregationBuilder {
-	return create(parser.LIMITK, vector)
+func LimitK(vector parser.Expr, k float64) *AggregationBuilder {
+	return createWithParam(parser.LIMITK, vector, NewNumber(k))
 }
 
-func LimitRatio(vector parser.Expr) *AggregationBuilder {
-	return create(parser.LIMIT_RATIO, vector)
+func LimitRatio(vector parser.Expr, ratio float64) *AggregationBuilder {
+	return createWithParam(parser.LIMIT_RATIO, vector, NewNumber(ratio))
 }
 
 func Stddev(vector parser.Expr) *AggregationBuilder {
@@ -99,6 +109,6 @@ func Sum(vector parser.Expr) *AggregationBuilder {
 	return create(parser.SUM, vector)
 }
 
-func Topk(vector parser.Expr) *AggregationBuilder {
-	return create(parser.TOPK, vector)
+func TopK(vector parser.Expr, k float64) *AggregationBuilder {
+	return createWithParam(parser.TOPK, vector, NewNumber(k))
 }
