@@ -121,7 +121,7 @@ func Eql(left parser.Expr, right parser.Expr) *BinaryBuilder {
 }
 
 func Eqlc(left parser.Expr, right parser.Expr) *BinaryBuilder {
-	return createBinaryOperation(parser.EQL, left, right)
+	return createBinaryOperation(parser.EQLC, left, right)
 }
 
 func Gte(left parser.Expr, right parser.Expr) *BinaryBuilder {
