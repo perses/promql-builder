@@ -120,6 +120,10 @@ func Eql(left parser.Expr, right parser.Expr) *BinaryBuilder {
 	return createBinaryOperation(parser.EQL, left, right)
 }
 
+func Eqlc(left parser.Expr, right parser.Expr) *BinaryBuilder {
+	return createBinaryOperation(parser.EQLC, left, right)
+}
+
 func Gte(left parser.Expr, right parser.Expr) *BinaryBuilder {
 	return createBinaryOperation(parser.GTE, left, right)
 }
@@ -146,4 +150,12 @@ func Unless(left parser.Expr, right parser.Expr) *BinaryBuilder {
 }
 func Or(left parser.Expr, right parser.Expr) *BinaryBuilder {
 	return createBinaryOperation(parser.LOR, left, right)
+}
+
+func NeqRegex(left parser.Expr, right parser.Expr) *BinaryBuilder {
+	return createBinaryOperation(parser.NEQ_REGEX, left, right)
+}
+
+func EqlRegex(left parser.Expr, right parser.Expr) *BinaryBuilder {
+	return createBinaryOperation(parser.EQL_REGEX, left, right)
 }
