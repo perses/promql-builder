@@ -24,6 +24,10 @@ func (b *BinaryBuilder) Pretty(level int) string {
 func (b *BinaryBuilder) PositionRange() posrange.PositionRange {
 	return b.internal.PositionRange()
 }
+func (b *BinaryBuilder) Bool() *BinaryBuilder {
+	b.internal.ReturnBool = true
+	return b
+}
 
 func (b *BinaryBuilder) Ignoring(labels ...string) *BinaryWithVectorMatching {
 	b.internal.VectorMatching = &parser.VectorMatching{
@@ -63,6 +67,11 @@ func (b *BinaryWithVectorMatching) Pretty(level int) string {
 }
 func (b *BinaryWithVectorMatching) PositionRange() posrange.PositionRange {
 	return b.binaryOpt.PositionRange()
+}
+
+func (b *BinaryWithVectorMatching) Bool() *BinaryWithVectorMatching {
+	b.binaryOpt.internal.ReturnBool = true
+	return b
 }
 
 func (b *BinaryWithVectorMatching) GroupLeft(labels ...string) *BinaryWithVectorMatching {
