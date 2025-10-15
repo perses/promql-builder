@@ -141,6 +141,41 @@ It will give the following output:
 rate(foo[1h2m4s])
 ```
 
+### Create your custom/non-standard PromQL function
+
+If you want to use a function that is not provided by this library, you can create your own function using the
+`promqlbuilder.NewFunction` function.
+
+For example, with a custom function `my_custom_function`:
+
+```go
+package main
+import (
+    "fmt"
+
+    promqlbuilder "github.com/perses/promql-builder"
+    "github.com/perses/promql-builder/matrix"
+    "github.com/perses/promql-builder/vector"
+)
+func main() {
+    m := promqlbuilder.NewFunction("my_custom_function",
+        matrix.New(
+            vector.New(vector.WithMetricName("foo")),
+            matrix.WithRangeAsString("1h2m4s"),
+        ),
+        promqlbuilder.NewNumberLiteral(123),
+        promqlbuilder.NewStringLiteral("bar"),
+    )
+    fmt.Print(m.String())
+}
+```
+
+It will give the following output:
+
+```text
+my_custom_function(foo[1h2m4s], 123, "bar")
+```
+
 ### Use aggregation function
 
 As you may know, all aggregation functions can be combined with the keywords `by` or `without` in order to specify on
@@ -173,12 +208,10 @@ func main() {
 		).By("namespace")
 	fmt.Print(m.String())
 }
-
 ```
 
 It will give the following output:
 
-```text
 ```text
 sum by("namespace") (rate(foo[1h2m4s]))
 ```
