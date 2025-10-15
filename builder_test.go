@@ -2,6 +2,7 @@ package promqlbuilder
 
 import (
 	"testing"
+	"time"
 
 	"github.com/perses/promql-builder/label"
 	"github.com/perses/promql-builder/matrix"
@@ -80,6 +81,16 @@ func TestPromQLBuilder(t *testing.T) {
 				).By("namespace"),
 				vector.New(vector.WithMetricName("perses_info")),
 			).Ignoring("podName").GroupLeft("namespace"),
+		},
+		{
+			name:     "custom function",
+			expected: "xincrease(metric[1m])",
+			expr: NewFunction("xincrease",
+				matrix.New(
+					vector.New(vector.WithMetricName("metric")),
+					matrix.WithRange(time.Minute),
+				),
+			),
 		},
 	}
 	for _, test := range testSuite {
