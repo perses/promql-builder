@@ -92,6 +92,11 @@ func TestPromQLBuilder(t *testing.T) {
 				),
 			),
 		},
+		{
+			name:     "count values with label",
+			expected: "count_values(\"config_hash\", alertmanager_config_hash)",
+			expr:     CountValues("config_hash", vector.New(vector.WithMetricName("alertmanager_config_hash"))),
+		},
 	}
 	for _, test := range testSuite {
 		t.Run(test.name, func(t *testing.T) {

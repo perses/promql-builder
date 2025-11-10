@@ -69,8 +69,8 @@ func Count(vector parser.Expr) *AggregationBuilder {
 	return create(parser.COUNT, vector)
 }
 
-func CountValues(vector parser.Expr) *AggregationBuilder {
-	return create(parser.COUNT_VALUES, vector)
+func CountValues(label string, vector parser.Expr) *AggregationBuilder {
+	return createWithParam(parser.COUNT_VALUES, vector, NewString(label))
 }
 
 func Group(vector parser.Expr) *AggregationBuilder {
