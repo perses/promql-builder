@@ -3,7 +3,7 @@ module github.com/perses/promql-builder
 go 1.25.0
 
 require (
-	github.com/prometheus/common v0.67.2
+	github.com/prometheus/common v0.67.4
 	github.com/prometheus/prometheus v0.307.3
 	github.com/stretchr/testify v1.11.1
 )
