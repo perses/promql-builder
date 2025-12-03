@@ -97,6 +97,22 @@ func TestPromQLBuilder(t *testing.T) {
 			expected: "count_values(\"config_hash\", alertmanager_config_hash)",
 			expr:     CountValues("config_hash", vector.New(vector.WithMetricName("alertmanager_config_hash"))),
 		},
+		{
+			name:     "parenthesis",
+			expected: "(time() - foo[5d]) / 100",
+			expr: Div(
+				Parenthesis(
+					Sub(
+						Time(),
+						matrix.New(
+							vector.New(
+								vector.WithMetricName("foo")),
+							matrix.WithRangeAsString("5d"),
+						)),
+				),
+				NewNumber(100),
+			),
+		},
 	}
 	for _, test := range testSuite {
 		t.Run(test.name, func(t *testing.T) {
@@ -229,6 +245,34 @@ func TestPretty(t *testing.T) {
 					).By("namespace", "job"),
 				).Ignoring("code").GroupLeft(),
 				&parser.NumberLiteral{Val: 100},
+			),
+		},
+		{
+			name: "parenthesis with range vector",
+			expected: `  (
+      time()
+    -
+      thanos_objstore_last_successful_upload_time{job=~"thanos-compactor",namespace="thanos-operator-system"}[5d]
+  )
+/
+  100`,
+			expr: Div(
+				Parenthesis(
+					Sub(
+						Time(),
+						matrix.New(
+							vector.New(
+								vector.WithMetricName("thanos_objstore_last_successful_upload_time"),
+								vector.WithLabelMatchers(
+									label.New("job").EqualRegexp("thanos-compactor"),
+									label.New("namespace").Equal("thanos-operator-system"),
+								),
+							),
+							matrix.WithRangeAsString("5d"),
+						),
+					),
+				),
+				NewNumber(100),
 			),
 		},
 	}
