@@ -87,19 +87,21 @@ func Children(node parser.Node) []parser.Node {
 		// While this does not look nice, it should avoid unnecessary allocations
 		// caused by slice resizing
 		switch {
-		case n.Expr == nil && n.internal.Param == nil:
+		case n.internal.Expr == nil && n.internal.Param == nil:
 			return nil
-		case n.Expr == nil:
+		case n.internal.Expr == nil:
 			return []parser.Node{n.internal.Param}
 		case n.internal.Param == nil:
-			return []parser.Node{n.Expr}
+			return []parser.Node{n.internal.Expr}
 		default:
-			return []parser.Node{n.Expr, n.internal.Param}
+			return []parser.Node{n.internal.Expr, n.internal.Param}
 		}
 	case *parser.BinaryExpr:
 		return []parser.Node{n.LHS, n.RHS}
 	case *BinaryBuilder:
 		return []parser.Node{n.internal.LHS, n.internal.RHS}
+	case *BinaryWithVectorMatching:
+		return []parser.Node{n.binaryOpt.internal.LHS, n.binaryOpt.internal.RHS}
 	case *parser.Call:
 		// golang cannot convert slices of interfaces
 		ret := make([]parser.Node, len(n.Args))
