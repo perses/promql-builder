@@ -11,14 +11,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package duration
+package main
 
-import "github.com/prometheus/common/model"
+import (
+	"flag"
 
-func MustParse(s string) model.Duration {
-	d, err := model.ParseDuration(s)
-	if err != nil {
-		panic(err)
-	}
-	return d
+	"github.com/perses/perses/scripts/pkg/license"
+)
+
+func main() {
+	l := license.DefaultLicense()
+	l.RegisterFlags()
+	flag.Parse()
+	l.Execute()
 }
