@@ -99,6 +99,16 @@ func (b *BinaryWithVectorMatching) GroupRight(labels ...string) *BinaryWithVecto
 	return b
 }
 
+func (b *BinaryWithVectorMatching) FillLHS(v float64) *BinaryWithVectorMatching {
+	b.binaryOpt.internal.VectorMatching.FillValues.LHS = &v
+	return b
+}
+
+func (b *BinaryWithVectorMatching) FillRHS(v float64) *BinaryWithVectorMatching {
+	b.binaryOpt.internal.VectorMatching.FillValues.RHS = &v
+	return b
+}
+
 func createBinaryOperation(itemType parser.ItemType, left parser.Expr, right parser.Expr) *BinaryBuilder {
 	b := &BinaryBuilder{
 		internal: &parser.BinaryExpr{

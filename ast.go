@@ -216,7 +216,7 @@ func DeepCopyExpr(expr parser.Expr) parser.Expr {
 			Op:             e.Op,
 			LHS:            DeepCopyExpr(e.LHS),
 			RHS:            DeepCopyExpr(e.RHS),
-			VectorMatching: e.VectorMatching,
+			VectorMatching: deepCopyVectorMatching(e.VectorMatching),
 			ReturnBool:     e.ReturnBool,
 		}
 
@@ -226,7 +226,7 @@ func DeepCopyExpr(expr parser.Expr) parser.Expr {
 				Op:             e.internal.Op,
 				LHS:            DeepCopyExpr(e.internal.LHS),
 				RHS:            DeepCopyExpr(e.internal.RHS),
-				VectorMatching: e.internal.VectorMatching,
+				VectorMatching: deepCopyVectorMatching(e.internal.VectorMatching),
 				ReturnBool:     e.internal.ReturnBool,
 			},
 		}
@@ -238,7 +238,7 @@ func DeepCopyExpr(expr parser.Expr) parser.Expr {
 					Op:             e.binaryOpt.internal.Op,
 					LHS:            DeepCopyExpr(e.binaryOpt.internal.LHS),
 					RHS:            DeepCopyExpr(e.binaryOpt.internal.RHS),
-					VectorMatching: e.binaryOpt.internal.VectorMatching,
+					VectorMatching: deepCopyVectorMatching(e.binaryOpt.internal.VectorMatching),
 					ReturnBool:     e.binaryOpt.internal.ReturnBool,
 				},
 			},
@@ -299,4 +299,31 @@ func DeepCopyExpr(expr parser.Expr) parser.Expr {
 	default:
 		panic("unsupported expr type in DeepCopyExpr" + fmt.Sprintf("%T", e))
 	}
+}
+
+func deepCopyVectorMatching(vm *parser.VectorMatching) *parser.VectorMatching {
+	if vm == nil {
+		return nil
+	}
+	cp := &parser.VectorMatching{
+		Card: vm.Card,
+		On:   vm.On,
+	}
+	if vm.MatchingLabels != nil {
+		cp.MatchingLabels = make([]string, len(vm.MatchingLabels))
+		copy(cp.MatchingLabels, vm.MatchingLabels)
+	}
+	if vm.Include != nil {
+		cp.Include = make([]string, len(vm.Include))
+		copy(cp.Include, vm.Include)
+	}
+	if vm.FillValues.RHS != nil {
+		v := *vm.FillValues.RHS
+		cp.FillValues.RHS = &v
+	}
+	if vm.FillValues.LHS != nil {
+		v := *vm.FillValues.LHS
+		cp.FillValues.LHS = &v
+	}
+	return cp
 }
