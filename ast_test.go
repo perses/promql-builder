@@ -139,6 +139,32 @@ func TestInspect(t *testing.T) {
 				"*parser.VectorSelector: bar",
 			},
 		},
+		{
+			name: "binary with fill LHS",
+			expr: Div(
+				Sum(vector.New(vector.WithMetricName("foo"))),
+				vector.New(vector.WithMetricName("bar")),
+			).On("label").FillLHS(0),
+			wantNodes: []string{
+				"*promqlbuilder.BinaryWithVectorMatching: sum(foo) / on (label) fill_left (0) bar",
+				"*promqlbuilder.AggregationBuilder: sum(foo)",
+				"*parser.VectorSelector: foo",
+				"*parser.VectorSelector: bar",
+			},
+		},
+		{
+			name: "binary with fill RHS",
+			expr: Div(
+				Sum(vector.New(vector.WithMetricName("foo"))),
+				vector.New(vector.WithMetricName("bar")),
+			).On("label").FillRHS(0),
+			wantNodes: []string{
+				"*promqlbuilder.BinaryWithVectorMatching: sum(foo) / on (label) fill_right (0) bar",
+				"*promqlbuilder.AggregationBuilder: sum(foo)",
+				"*parser.VectorSelector: foo",
+				"*parser.VectorSelector: bar",
+			},
+		},
 	}
 
 	for _, test := range testSuite {
