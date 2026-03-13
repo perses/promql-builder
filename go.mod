@@ -1,9 +1,9 @@
 module github.com/perses/promql-builder
 
-go 1.25.5
+go 1.25.7
 
 require (
-	github.com/perses/perses v0.53.0
+	github.com/perses/perses v0.53.1
 	github.com/prometheus/common v0.67.5
 	github.com/prometheus/prometheus v0.310.0
 	github.com/stretchr/testify v1.11.1
