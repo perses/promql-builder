@@ -192,6 +192,14 @@ func HistogramQuantile(quantile float64, vector parser.Expr) *parser.Call {
 	return NewFunction("histogram_quantile", NewNumber(quantile), vector)
 }
 
+func HistogramQuantiles(vector parser.Expr, labelName string, quantiles ...float64) *parser.Call {
+	args := []parser.Expr{vector, NewString(labelName)}
+	for _, q := range quantiles {
+		args = append(args, NewNumber(q))
+	}
+	return NewFunction("histogram_quantiles", args...)
+}
+
 func DoubleExponentialSmoothing[T RangeVectorBuilder](input T, smoothingFactor float64, trendFactor float64) *parser.Call {
 	return NewFunction("double_exponential_smoothing", convertToExpr(input), NewNumber(smoothingFactor), NewNumber(trendFactor))
 }
