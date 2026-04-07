@@ -126,6 +126,29 @@ func TestPromQLBuilder(t *testing.T) {
 				NewNumber(100),
 			),
 		},
+		{
+			name:     "histogram quantiles",
+			expected: `histogram_quantiles(rate(foo[5m]), "quantile", 0.5, 0.9, 0.99)`,
+			expr: HistogramQuantiles(
+				Rate(
+					matrix.New(
+						vector.New(vector.WithMetricName("foo")),
+						matrix.WithRangeAsString("5m"),
+					),
+				),
+				"quantile",
+				0.5, 0.9, 0.99,
+			),
+		},
+		{
+			name:     "histogram quantiles single",
+			expected: `histogram_quantiles(foo, "le", 0.95)`,
+			expr: HistogramQuantiles(
+				vector.New(vector.WithMetricName("foo")),
+				"le",
+				0.95,
+			),
+		},
 	}
 	for _, test := range testSuite {
 		t.Run(test.name, func(t *testing.T) {

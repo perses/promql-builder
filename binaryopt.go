@@ -191,3 +191,11 @@ func NeqRegex(left parser.Expr, right parser.Expr) *BinaryBuilder {
 func EqlRegex(left parser.Expr, right parser.Expr) *BinaryBuilder {
 	return createBinaryOperation(parser.EQL_REGEX, left, right)
 }
+
+func TrimUpper(left parser.Expr, right parser.Expr) *BinaryBuilder {
+	return createBinaryOperation(parser.TRIM_UPPER, left, right)
+}
+
+func TrimLower(left parser.Expr, right parser.Expr) *BinaryBuilder {
+	return createBinaryOperation(parser.TRIM_LOWER, left, right)
+}
