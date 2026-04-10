@@ -5,7 +5,7 @@ go 1.25.7
 require (
 	github.com/perses/perses v0.53.1
 	github.com/prometheus/common v0.67.5
-	github.com/prometheus/prometheus v0.310.1-0.20260402101759-d7cd96cb9894
+	github.com/prometheus/prometheus v0.311.1
 	github.com/stretchr/testify v1.11.1
 )
 
