@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/perses/perses v0.53.1
-	github.com/prometheus/common v0.70.0
+	github.com/prometheus/common v0.70.1
 	github.com/prometheus/prometheus v0.313.1
 	github.com/stretchr/testify v1.11.1
 )
@@ -23,8 +23,8 @@ require (
 	github.com/prometheus/procfs v0.21.0 // indirect
 	github.com/sirupsen/logrus v1.9.4 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
-	golang.org/x/sys v0.46.0 // indirect
-	golang.org/x/text v0.38.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/text v0.40.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
