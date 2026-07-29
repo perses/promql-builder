@@ -15,34 +15,40 @@ package label
 
 import "github.com/prometheus/prometheus/model/labels"
 
-type Builder labels.Matcher
+type Builder struct {
+	name string
+}
 
 func New(labelName string) *Builder {
 	return &Builder{
-		Name: labelName,
+		name: labelName,
 	}
 }
 
 func (b *Builder) Equal(labelValue string) *labels.Matcher {
-	b.Type = labels.MatchEqual
-	b.Value = labelValue
-	return (*labels.Matcher)(b)
+	m, _ := labels.NewMatcher(labels.MatchEqual, b.name, labelValue)
+	return m
 }
 
+// EqualRegexp creates a regexp matcher. Panics if the pattern is invalid
 func (b *Builder) EqualRegexp(labelValue string) *labels.Matcher {
-	b.Type = labels.MatchRegexp
-	b.Value = labelValue
-	return (*labels.Matcher)(b)
+	m, err := labels.NewMatcher(labels.MatchRegexp, b.name, labelValue)
+	if err != nil {
+		panic(err)
+	}
+	return m
 }
 
 func (b *Builder) NotEqual(labelValue string) *labels.Matcher {
-	b.Type = labels.MatchNotEqual
-	b.Value = labelValue
-	return (*labels.Matcher)(b)
+	m, _ := labels.NewMatcher(labels.MatchNotEqual, b.name, labelValue)
+	return m
 }
 
+// NotEqualRegexp creates a negative regexp matcher. Panics if the pattern is invalid
 func (b *Builder) NotEqualRegexp(labelValue string) *labels.Matcher {
-	b.Type = labels.MatchNotRegexp
-	b.Value = labelValue
-	return (*labels.Matcher)(b)
+	m, err := labels.NewMatcher(labels.MatchNotRegexp, b.name, labelValue)
+	if err != nil {
+		panic(err)
+	}
+	return m
 }

@@ -15,6 +15,7 @@ package duration
 
 import "github.com/prometheus/common/model"
 
+// MustParse parses a duration string. Panics if the string is invalid.
 func MustParse(s string) model.Duration {
 	d, err := model.ParseDuration(s)
 	if err != nil {
