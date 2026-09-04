@@ -1,6 +1,6 @@
 module github.com/perses/promql-builder
 
-go 1.26.5
+go 1.27.1
 
 require (
 	github.com/perses/perses v0.54.0
