@@ -1,10 +1,10 @@
 module github.com/perses/promql-builder
 
-go 1.27.1
+go 1.27.3
 
 require (
-	github.com/perses/perses v0.54.0
-	github.com/prometheus/common v0.72.0
+	github.com/perses/perses v0.55.0
+	github.com/prometheus/common v0.72.1
 	github.com/prometheus/prometheus v0.315.0
 	github.com/stretchr/testify v1.12.1
 )
@@ -19,10 +19,10 @@ require (
 	github.com/prometheus/client_golang v1.24.1 // indirect
 	github.com/prometheus/client_model v0.6.3 // indirect
 	github.com/prometheus/procfs v0.21.1 // indirect
-	github.com/sirupsen/logrus v1.9.4 // indirect
+	github.com/sirupsen/logrus v1.10.2 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/sys v0.48.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 )
